@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Item Finder</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <section class="section" id="search">
+      <div class="container is-max-desktop">
+        <form action="/" method="post" class="field is-grouped">
+          <span class="control is-expanded">
+            <input
+              type="search"
+              name="searchQuery"
+              placeholder="Search item"
+              class="input"
+          /></span>
+          <span class="control"
+            ><button type="submit" class="button is-primary">
+              Search
+            </button></span
+          >
+          <!-- <span>
+            <form action="/restart" method="post">
+              <button type="submit" class="button is-warning">Reload</button>
+            </form>
+          </span> -->
+        </form>
+      </div>
+    </section>
+
+    <% if (results.length !== 0) { %>
+    <section class="section pt-0" id="results">
+      <div class="container is-max-desktop">
+        <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th>Item Code</th>
+              <th>Item Name</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <!-- forEach result: -->
+          <% results.forEach((result) => { %>
+          <tbody>
+            <tr>
+              <td><%= result["Item Code"] %></td>
+              <td><%= result["Item Name"] %></td>
+              <td><%= result["Price"] %></td>
+            </tr>
+          </tbody>
+          <% }); %>
+        </table>
+      </div>
+    </section>
+    <% } %>
+  </body>
+</html>
