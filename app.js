@@ -6,10 +6,6 @@ const xlsx = require(`xlsx`);
 const app = express();
 const port = 3000;
 
-app.set(`view engine`, `ejs`);
-app.use(express.static(`public`));
-app.use(express.urlencoded({ extended: true }));
-
 // session storing
 const generateUUID = () => {
   let uuid = ``;
@@ -26,6 +22,33 @@ const generateUUID = () => {
   return uuid;
 };
 
+const searchItem = (query) => {
+  const matchedItems = [];
+
+  itemsJson.forEach((item) => {
+    if (item[`Item Name`].toLowerCase().includes(query.toLowerCase())) {
+      matchedItems.push(item);
+    }
+  });
+
+  return matchedItems;
+};
+
+const loadXlsxJson = () => {
+  const workbook = xlsx.readFile(`pharma-sample-data.xlsx`);
+  const sheet1 = workbook.SheetNames[0];
+  const itemSheet = workbook.Sheets[sheet1];
+  const itemsJson = xlsx.utils.sheet_to_json(itemSheet);
+
+  return itemsJson;
+};
+
+// global-scoped array of JSON object (data)
+let itemsJson = loadXlsxJson();
+
+app.set(`view engine`, `ejs`);
+app.use(express.static(`public`));
+app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: generateUUID(), // uuid later
@@ -34,19 +57,7 @@ app.use(
   })
 );
 
-// xlsx
-const workbook = xlsx.readFile(`pharma-sample-data.xlsx`);
-const sheet1 = workbook.SheetNames[0];
-const itemSheet = workbook.Sheets[sheet1];
-const itemsJson = xlsx.utils.sheet_to_json(itemSheet);
-
 // routing
-app.listen(port, () => {
-  console.log(`\n---------------------`);
-  console.log(`http://localhost:3000`);
-  console.log(`---------------------`);
-});
-
 app.get(`/`, (req, res) => {
   const results = req.session.results || [];
 
@@ -64,14 +75,13 @@ app.post(`/`, (req, res) => {
   res.redirect(`/`);
 });
 
-const searchItem = (query) => {
-  const matchedItems = [];
+app.get(`/restart`, (req, res) => {
+  itemsJson = loadXlsxJson();
+  res.redirect(`/`);
+});
 
-  itemsJson.forEach((item) => {
-    if (item[`Item Name`].toLowerCase().includes(query.toLowerCase())) {
-      matchedItems.push(item);
-    }
-  });
-
-  return matchedItems;
-};
+app.listen(port, () => {
+  console.log(`\n---------------------`);
+  console.log(`http://localhost:3000`);
+  console.log(`---------------------`);
+});
