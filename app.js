@@ -59,7 +59,7 @@ app.use(
 
 // routing
 app.get(`/`, (req, res) => {
-  const results = req.session.results || [];
+  const results = req.session.results || itemsJson;
 
   res.render(`index`, {
     results: results,
