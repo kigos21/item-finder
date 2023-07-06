@@ -14,23 +14,68 @@
   <body>
     <section class="section" id="search">
       <div class="container is-max-desktop">
+        <div class="is-flex is-justify-content-space-between">
+          <h1 class="title mb-2">Item Finder</h1>
+          <button class="button is-small help-btn" title="View shortcuts">
+            <strong>?</strong>
+          </button>
+        </div>
         <form action="/" method="post" class="field is-grouped">
           <span class="control is-expanded">
             <input
               type="search"
               name="searchQuery"
               placeholder="Search item"
-              class="input"
+              class="input searchbox"
           /></span>
           <span class="control"
-            ><button type="submit" class="button is-primary">
+            ><button type="submit" class="button is-primary submit-btn">
               Search
             </button></span
           >
-          <a href="/restart" class="button is-warning">Reload File</a>
+          <a
+            href="/restart"
+            class="button is-warning reload-btn"
+            title="After making changes to the Excel file, it won't reflect in this application. Click this button to fix."
+            >Reload File</a
+          >
         </form>
       </div>
     </section>
+
+    <div class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <section class="section">
+          <h1 class="title has-text-centered">Shortcuts</h1>
+          <table class="table is-bordered is-fullwidth has-text-centered">
+            <thead>
+              <tr>
+                <th class="has-text-centered">Shortcut Key</th>
+                <th class="has-text-centered">Function</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>/</td>
+                <td>Focus on search bar</td>
+              </tr>
+              <tr>
+                <td>Enter</td>
+                <td>Search</td>
+              </tr>
+              <tr>
+                <td>r</td>
+                <td>Reload file</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="has-text-centered is-info">
+            Click anywhere outside to close
+          </p>
+        </section>
+      </div>
+    </div>
 
     <% if (results.length !== 0) { %>
     <section class="section pt-0" id="results">
@@ -57,5 +102,53 @@
       </div>
     </section>
     <% } %>
+
+    <script>
+      const searchEl = document.querySelector(".searchbox");
+      const submitEl = document.querySelector(".submit-btn");
+      const reloadEl = document.querySelector(".reload-btn");
+      const helpEl = document.querySelector(".help-btn");
+
+      // modalEl.classList.add("is-active");
+      const modalEl = document.querySelector(".modal");
+
+      // modalEl.classList.remove("is-active");
+      const modalBg = document.querySelector(".modal-background");
+
+      document.addEventListener("keydown", (event) => {
+        if (document.activeElement === searchEl) {
+          return;
+        }
+
+        if (event.key === "/") {
+          event.preventDefault();
+          searchEl.focus();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          submitEl.click();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (document.activeElement === searchEl) {
+          return;
+        }
+
+        if (event.key.toLocaleLowerCase() === "r") {
+          reloadEl.click();
+        }
+      });
+
+      helpEl.addEventListener("click", () => {
+        modalEl.classList.add("is-active");
+      });
+
+      modalBg.addEventListener("click", () => {
+        modalEl.classList.remove("is-active");
+      });
+    </script>
   </body>
 </html>
